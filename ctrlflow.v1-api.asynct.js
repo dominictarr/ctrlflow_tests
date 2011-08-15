@@ -46,7 +46,8 @@ exports ['pass [function, arg1, arg2, arg3,...] to set args'] = function (test) 
       it(cb).function()
       it(args).deepEqual(_args)
       cb()
-    },1,0,2,2,4]
+    },1,0,2,2,4],
+  [function (cb) {cb()}]
   ])
 
   go(function (err) {
@@ -54,4 +55,29 @@ exports ['pass [function, arg1, arg2, arg3,...] to set args'] = function (test) 
     it(called).equal(1)
     test.done()
   })
+}
+
+exports ['call many [function, arg1, arg2, arg3,...] style steps'] = function (test) {
+  var called = 0
+    , funx = function (){
+      called ++
+      var cb = [].pop.call(arguments)
+      it(cb).function()
+      cb()
+    }
+
+  var go = ctrl.seq([
+    [funx],
+    [funx],
+    [funx],
+    [funx],
+    [funx]
+  ])
+
+  go(function (err) {
+    if (err) throw err
+    it(called).equal(5)
+    test.done()
+  })
+
 }
