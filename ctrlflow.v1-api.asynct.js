@@ -1,6 +1,6 @@
 var ctrl = require('../ctrlflow')
   , it = require('it-is')
-  
+
 exports ['seq returns a function'] = function (test){
 
   var go = ctrl.seq([

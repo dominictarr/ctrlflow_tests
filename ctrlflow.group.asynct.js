@@ -83,7 +83,7 @@ exports['group with error 2'] = function (test){
   })
 }
 
-exports['group with args '] = function (test){
+exports['group with args'] = function (test){
   var error = new Error("ERR")
     , g = ctrl.group()
   
@@ -103,3 +103,56 @@ exports['group with args '] = function (test){
   })
 }
 
+exports.group2 = function (test){
+  var called = 0
+  var g = ctrl.group({
+    a: function (){
+      called ++
+      setTimeout(this.next,100)
+    },
+    b: function (){
+      called ++
+      setTimeout(this.next,50)
+    },
+    c: function (){
+      called ++
+      setTimeout(this.next,150)
+    }
+  }, function (err,results){
+    it(err).equal(null)
+    it(called).equal(3)
+    it(results).has({
+      a: []
+    , b: []
+    , c: []
+    })
+    test.done()
+  })  
+}
+
+exports['group can be seq array'] = function (test){
+  var called = 0
+  var g = ctrl.group({
+    a: [function (){
+      called ++
+      setTimeout(this.next,100)
+    }],
+    b: [function (){
+      called ++
+      setTimeout(this.next,50)
+    }],
+    c: [function (){
+      called ++
+      setTimeout(this.next,150)
+    }]
+  }, function (err,results){
+    it(err).equal(null)
+    it(called).equal(3)
+    it(results).has({
+      a: []
+    , b: []
+    , c: []
+    })
+    test.done()
+  })  
+}
