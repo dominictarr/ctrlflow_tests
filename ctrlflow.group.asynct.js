@@ -156,3 +156,43 @@ exports['group can be seq array'] = function (test){
     test.done()
   })  
 }
+
+exports['group can be seq array - edgecase'] = function (test){
+  var called = 0
+  var g = ctrl.group({
+    a: [function (){
+      called ++
+      setTimeout(this.next,100)
+    }]
+  }, function (err,results){
+    it(err).equal(null)
+    it(called).equal(1)
+    it(results).has({
+      a: []
+    })
+    test.done()
+  })  
+}
+
+exports['seq can take parallel group'] = function (test) {
+  var called = 0
+    , go = ctrl.seq([
+    { a: [function (){
+        called ++
+        console.log('euhaoeuhaorcehuorcehruhc')
+        setTimeout(this.next,100)
+      }]
+    }, function (err,results) {
+        called += 10
+        it(results).has({
+          a: []
+        })    
+        this.next()
+    }])
+    
+  go(function (err,results){
+    if (err)  throw err
+    it(called).equal(11)
+    test.done()
+  })
+}
