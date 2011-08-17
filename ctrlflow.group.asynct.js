@@ -182,11 +182,11 @@ exports['seq can take parallel group'] = function (test) {
         console.log('euhaoeuhaorcehuorcehruhc')
         setTimeout(this.next,100)
       }]
-    }, function (err,results) {
+    }, function (results) {
         called += 10
         it(results).has({
           a: []
-        })    
+        })
         this.next()
     }])
     

@@ -1,132 +1,126 @@
 var ctrl = require('../ctrlflow')
-  , it = require('it-is')
+  , it = require('it-is').style('colour')
   
 exports ['api'] = function (test){
 
   it(ctrl).has({
     seq: it.function()
   })
-  it(ctrl.seq()).has({
-    go: it.function()
-  , done: it.function()
-  , throws: it.function()
-  , onError: it.function()
-  })
+  it(ctrl.seq([])).function ()
 
   test.done()
 }
   
-  var throwErr = function error (err){throw err}
+  var throwErr = 
   
-exports ['sequence'] = function (test){
+exports ['turn sequence into a async function'] = function (test){
 
   var called = []
+    , r = /uenthoaneuhoe/
+    , args = [0,'oenuth', {}, r ]
+    , go 
 
+
+
+  go = //ctlr.seq returns a function
   ctrl.seq([
-  function (){
-    called.push(1)
-    this.next()
-  },
-  function (){
-    called.push(2)
-    this.next()
-  },
-  function (){
-    called.push(3)
-    this.next()
-  },
-  function (){
-    it(called).deepEqual([1,2,3])
+    function (){
+      var _args = [].slice.call(arguments)
+        , cb = _args.pop()
+      it(_args).deepEqual(args)
+      called.push(1)
+      this.next(null, 0,'oenuth', {}, r)
+    }
+  ])
+
+  it(go).function()
+  
+  //call the returned function with args & a callback.
+  go(0,'oenuth', {}, r, function (err) {
+    if(err) 
+      throw err
+    var _args = [].slice.call(arguments)
+      , _err =_args.shift() 
+    it(_args).deepEqual(args)
+
+    it(called).deepEqual([1])
     test.done()
-  }],throwErr).go()
+  })
+
 }
 
-exports ['pass args through sequence, no error handling'] = function (test){
+exports ['callbacks only work once'] = function (test){
+
+  var called = 0
+    , go 
+
+  go = //ctlr.seq returns a function
+  ctrl.seq([
+    function () {
+      called ++
+      this.next()
+      this.next("ERROR") //aditional calls will be logged but ignored
+    }
+  ])
+
+  //call the returned function with args & a callback.
+  go(function (err) {
+    it(called).equal(1)    
+    test.done()
+  })
+
+}
+
+
+exports ['pass args through sequence'] = function (test){
 
   var called = []
 
   ctrl.seq([
-  function (x){
+  function (x) {
     it(x).equal(0)
     
     called.push(1)
-    this.next(1)
+    this.next(null,1)
   },
-  function (x){
+  function (x) {
     it(x).equal(1)
     
     called.push(2)
-    this.next(2)
+    this.next(null,2)
   },
   function (x){
     it(x).equal(2)
     
     called.push(3)
-    this.next(3)
+    this.next(null,3)
   },
   function (x){
     it(x).equal(3)
 
     it(called).deepEqual([1,2,3])
+    this.next()
+  }])
+  (0,function (err){
+    if(err) 
+      throw err
     test.done()
-  }],
-  throwErr)(0)
+  })
 
 }
 
-exports ['pass args through sequence, pass error to function'] = function (test){
+exports ['catch throw in step'] = function (test){
 
   var called = []
     , error = new Error("INTENSIONAL ERROR")
 
   ctrl.seq([
-  function (x){
-    it(x).equal(0)
-    
-    called.push(1)
-    this.next(null,1)
-  },
-  function (err,x){
-    it(x).equal(1)
-        
-    throw error
-
-    this.next(null,2)
-  },
-  function (err,x){
-    it("this function").equal("should not be called")
-  }],
-  function onError (err){
-    it(err).property('name','AssertionError')
-    test.done()
-  })(0)
-}
-
-exports ['set error handling to throw'] = function (test){
-
-  var called = []
-    , error = new Error("INTENSIONAL ERROR")
-
-  test.catch = function (err){
+    function (x) {
+      throw error
+    }])
+  (function (err){
+    //    console.log('******************************')
     it(err).equal(error)
     test.done()
-  }
-
-  ctrl.seq([
-  function (x){
-    it(x).equal(0)
-    
-    called.push(1)
-    this.next(null,1)
-  },
-  function (err,x){
-    it(x).equal(1)
-        
-    throw error
-
-    this.next(null,2)
-  },
-  function (err,x){
-    it("this function").equal("should not be called")
-  }]).throws()(0)
+  })
 }
