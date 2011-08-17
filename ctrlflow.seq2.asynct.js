@@ -1,46 +1,11 @@
 var ctrl = require('../ctrlflow')
   , it = require('it-is')
   
-exports ['api'] = function (test){
 
-  it(ctrl).has({
-    seq: it.function()
-  })
-  it(ctrl.seq()).has({
-    go: it.function()
-  , done: it.function()
-  , throws: it.function()
-  , onError: it.function()
-  })
-
-  test.done()
-}
-  var throwErr = function (err){
-    if(!err)
-      throw new Error('threw falsey error:' + err)
-    throw err
-  }
-exports ['sequence'] = function (test){
-
-  var called = []
-
-  ctrl.seq([
-  function (next){
-    called.push(1)
-    next()
-  },
-  function (next){
-    called.push(2)
-    next()
-  },
-  function (next){
-    called.push(3)
-    next()
-  },
-  function (){
-    it(called).deepEqual([1,2,3])
-    test.done()
-  }],throwErr).go()
+var throwErr = function (err){
+  if(!err)
+    throw new Error('threw falsey error:' + err)
+  throw err
 }
 
 exports ['pass args through sequence, no error handling'] = function (test){
