@@ -81,3 +81,29 @@ exports ['call many [function, arg1, arg2, arg3,...] style steps'] = function (t
   })
 
 }
+
+exports ['ignore null step'] = function (test) {
+
+  var called = 0
+    , funx = function (){
+      called ++
+      var cb = [].pop.call(arguments)
+      it(cb).function()
+      cb()
+    }
+
+  var go = ctrl.seq([
+    [funx],
+    null,
+    null,
+    [funx]
+  ])
+
+  go(function (err) {
+    if (err) throw err
+    it(called).equal(2)
+    test.done()
+  })
+
+
+}
