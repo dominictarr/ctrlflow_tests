@@ -4,19 +4,17 @@ var ctrl = require('ctrlflow')
 
 exports.group2 = function (test){
   var called = 0
-  var g = ctrl.group({
-    a: function (){
+  function timeout (ms) {
+    return function (){
       called ++
       setTimeout(this.next,100)
-    },
-    b: function (){
-      called ++
-      setTimeout(this.next,50)
-    },
-    c: function (){
-      called ++
-      setTimeout(this.next,150)
     }
+  }
+  
+  var g = ctrl.group({
+    a: timeout(100),
+    b: timeout(50),
+    c: timeout(150)
   }, function (err,results){
     it(err).equal(null)
     it(called).equal(3)
@@ -32,15 +30,15 @@ exports.group2 = function (test){
 exports['group can be seq array'] = function (test){
   var called = 0
   var g = ctrl.group({
-    a: [function (){
+    a: [function () {
       called ++
       setTimeout(this.next,100)
     }],
-    b: [function (){
+    b: [function () {
       called ++
       setTimeout(this.next,50)
     }],
-    c: [function (){
+    c: [function () {
       called ++
       setTimeout(this.next,150)
     }]
@@ -78,7 +76,6 @@ exports['seq can take parallel group'] = function (test) {
     , go = ctrl.seq([
     { a: [function (){
         called ++
-        console.log('euhaoeuhaorcehuorcehruhc')
         setTimeout(this.next,100)
       }]
     }, function (results) {
@@ -102,7 +99,8 @@ exports['group can be seq array - edgecase'] = function (test){
     
   function f (add, cb) {
     called ++
-    count += add
+    if('number' == typeof add)
+      count += add
     this.next()
   }
   var g = ctrl.group({
@@ -117,6 +115,37 @@ exports['group can be seq array - edgecase'] = function (test){
     if(err) throw err
     it(called).equal(6)
     it(count).equal(30)
+    it(results).has({
+      a: []
+    })
+    test.done()
+  })  
+}
+
+exports['group can be seq array - edgecase'] = function (test){
+  var called = 0
+    , count = 0
+    
+  function f (add, cb) {
+    called ++
+    if('number' == typeof add)
+      count += add
+    this.next()
+  }
+  var go = ctrl.group({
+    a: f,
+    b: [f,f,f],
+    c: [[f, 10],[f, 20]],
+    d: [f, {
+      A: f,
+      B: [[f, 30], f]
+    }]
+  })
+  
+  go(function (err, results) {
+    if(err) throw err
+    it(called).equal(10)
+    it(count).equal(60)
     it(results).has({
       a: []
     })
