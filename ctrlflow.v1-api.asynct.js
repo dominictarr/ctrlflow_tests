@@ -105,5 +105,16 @@ exports ['ignore null step'] = function (test) {
     test.done()
   })
 
+}
+
+exports ['exports seq directly'] = function (test) {
+
+  //
+  // check that ctrlflow is usable directly from the require('ctrlflow')
+  //
+
+  it(ctrl).equal(ctrl.seq)
+  
+  test.done()
 
 }

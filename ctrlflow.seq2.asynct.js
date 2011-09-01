@@ -32,7 +32,6 @@ exports ['pass args through sequence, no error handling'] = function (test){
     next(null,3)
   }])(0, function (err,x){
     if(err) throw err
-    console.log(arguments)    
       it(x).equal(3)
 
     it(called).deepEqual([1,2,3])
