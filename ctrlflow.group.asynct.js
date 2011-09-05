@@ -1,6 +1,7 @@
 
 var ctrl = require('ctrlflow')
   , it = require('it-is')
+  , d = require('d-utils/async')
 
 exports.group2 = function (test){
   var called = 0
@@ -32,23 +33,23 @@ exports['group can be seq array'] = function (test){
   var g = ctrl.group({
     a: [function () {
       called ++
-      setTimeout(this.next,100)
+      d.delay(this.next,100)(null, "A")
     }],
     b: [function () {
       called ++
-      setTimeout(this.next,50)
+      d.delay(this.next,50)(null, "B")
     }],
     c: [function () {
       called ++
-      setTimeout(this.next,150)
+      d.delay(this.next,150)(null, "C")
     }]
   }, function (err,results){
     it(err).equal(null)
     it(called).equal(3)
     it(results).has({
-      a: []
-    , b: []
-    , c: []
+      a: it.deepEqual(["A"])
+    , b: it.deepEqual(["B"])
+    , c: it.deepEqual(["C"])
     })
     test.done()
   })  

@@ -5,7 +5,9 @@
 , "repository": 
   { "type": "git"
   , "url": "https://github.com/dominictarr/ctrlflow_tests.git" }
-, "dependencies": {}
+, "dependencies": {
+    "d-utils": "~1.2"
+  }
 , "devDependencies": {}
 , "author": "Dominic Tarr <dominic.tarr@gmail.com> (http://bit.ly/dominictarr)"
 , "scripts": { "test": "meta-test test/*.js" } }
