@@ -58,6 +58,7 @@ exports ['callbacks only work once'] = function (test){
   ctrl.seq([
     function () {
       called ++
+      console.log('IGNORE "OOPS" MESSAGE')
       this.next()
       this.next("ERROR") //aditional calls will be logged but ignored
     }
@@ -123,4 +124,25 @@ exports ['catch throw in step'] = function (test){
     it(err).equal(error)
     test.done()
   })
+}
+
+exports ['call a seq in parallel'] = function (test) {
+  var called = 0
+  var go = ctrl.seq([
+    function (callback) {
+      setTimeout(function () {
+        callback(null, ++called)
+        console.log(called)
+        },1)
+    }])
+
+
+  ctrl([{
+    A: go, B: go  
+  }]) (function (err, data){
+    if(err) throw err
+    console.log(data)
+    test.done()
+  })
+
 }
