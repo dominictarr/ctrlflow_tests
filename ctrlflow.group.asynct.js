@@ -153,3 +153,22 @@ exports['group can be seq array - edgecase'] = function (test){
     test.done()
   })  
 }
+
+exports ['each grouped step gets the same args'] = function (test) {
+  var args = [1,true, 25.34, {}, [0]]
+  ctrl.group({
+    A: d.fallthrough, //fallthrough passes args straight to callback.
+    B: d.fallthrough,
+    C: d.fallthrough,
+    })
+  (1,true, 25.34, {}, [0], function (err, results) {
+    
+    it(results).has ({
+      A: [1,true, 25.34, {}, [0]],
+      B: [1,true, 25.34, {}, [0]],
+      C: [1,true, 25.34, {}, [0]],
+    })
+    test.done()  
+  })
+
+}
