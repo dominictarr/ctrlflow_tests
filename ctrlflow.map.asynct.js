@@ -34,16 +34,21 @@ exports['ls serial']    = ls(ctrl.serial)
 function ls (type) {
   return function (test) {
     var ls
+    console.log(__dirname)
 
     ctrl([
-      fs.readdir
+      [fs.readdir, __dirname]
     , function (data, callback) {
         ls = data
-        callback(null,data)
+        callback(null, data)
       }
-    , type.map(fs.stat)
+    , type.map(ctrl([
+        ctrl.toAsync(function (f) {return path.join(__dirname, f)})
+      , fs.lstat
+      ]))
     ])
-    (__dirname, function (err, data) {
+    (function (err, data) {
+      console.log(err, ls)
       if(err) throw err
       it(data.length).equal(ls.length)
       test.done()
@@ -51,8 +56,8 @@ function ls (type) {
   }
 }
 
-exports['ls-r parallel']  = lsR(ctrl.parallel)
-exports['ls-r serial']    = lsR(ctrl.serial)
+//exports['ls-r parallel']  = lsR(ctrl.parallel)
+//exports['ls-r serial']    = lsR(ctrl.serial)
 function lsR(type) {
   return function (test) {
     //fs has an arkward interface, because file are objects (state + behaviour) but fs is functions
@@ -60,7 +65,7 @@ function lsR(type) {
     var ls = 
     ctrl([
       function (fn, cb) {
-        console.log('dir:', fn)
+        //console.log('dir:', fn)
         fs.stat(fn, function (err, stat) {
           if(err)
             cb(err)
