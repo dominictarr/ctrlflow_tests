@@ -48,7 +48,6 @@ function ls (type) {
       ]))
     ])
     (function (err, data) {
-      console.log(err, ls)
       if(err) throw err
       it(data.length).equal(ls.length)
       test.done()
