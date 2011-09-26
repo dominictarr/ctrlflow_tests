@@ -4,9 +4,9 @@ var ctrl = require('../ctrlflow')
 exports ['api'] = function (test){
 
   it(ctrl).has({
-    seq: it.function()
+    seq: it.isFunction ()
   })
-  it(ctrl.seq([])).function ()
+  it(ctrl.seq([])).isFunction ()
 
   test.done()
 }
@@ -33,7 +33,7 @@ exports ['turn sequence into a async function'] = function (test){
     }
   ])
 
-  it(go).function()
+  it(go).isFunction ()
   
   //call the returned function with args & a callback.
   go(0,'oenuth', {}, r, function (err) {

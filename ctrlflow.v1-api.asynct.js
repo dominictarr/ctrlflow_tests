@@ -6,7 +6,7 @@ exports ['seq returns a function'] = function (test){
   var go = ctrl.seq([
    function (){ this.next() }])
   
-  it(go).function()
+  it(go).isFunction ()
 
   test.done() 
 }
@@ -43,7 +43,7 @@ exports ['pass [function, arg1, arg2, arg3,...] to set args'] = function (test) 
       var _args = [].slice.call(arguments)
       called ++
       var cb = _args.pop()
-      it(cb).function()
+      it(cb).isFunction ()
       it(args).deepEqual(_args)
       cb()
     },1,0,2,2,4],
@@ -62,7 +62,7 @@ exports ['call many [function, arg1, arg2, arg3,...] style steps'] = function (t
     , funx = function (){
       called ++
       var cb = [].pop.call(arguments)
-      it(cb).function()
+      it(cb).isFunction ()
       cb()
     }
 
@@ -85,10 +85,10 @@ exports ['call many [function, arg1, arg2, arg3,...] style steps'] = function (t
 exports ['ignore null step'] = function (test) {
 
   var called = 0
-    , funx = function (){
+    , funx = function () {
       called ++
       var cb = [].pop.call(arguments)
-      it(cb).function()
+      it(cb).isFunction ()
       cb()
     }
 

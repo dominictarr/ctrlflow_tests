@@ -19,7 +19,7 @@ function simple(type) {
         callback(null, value)
       }, true)
 
-    it(mapper).function()
+    it(mapper).isFunction ()
 
     mapper('abcdef'.split(''), function (err, results) {
       if(err) throw err
