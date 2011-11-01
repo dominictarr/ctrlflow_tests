@@ -146,3 +146,20 @@ exports ['call a seq in parallel'] = function (test) {
   })
 
 }
+
+exports ['throw AND callback error'] = function (test) {
+  var err1 = new Error('should see this error')
+    , err2 = new Error('should not see this error')
+
+  ctrl([function (callback) {
+    process.nextTick(function () {
+      callback(err2)
+    })
+    throw err1
+  
+  }])(function (err) {
+    it(err).equal(err1)
+    test.done()
+  })
+
+}
