@@ -1,7 +1,7 @@
 
 var ctrl = require('ctrlflow')
   , it = require('it-is')
-  , d = require('d-utils')
+  , d = require('ubelt')
   , fs = require('fs')
   , path = require('path')
 
@@ -103,4 +103,16 @@ function lsR(type) {
       test.done()
     })
   }
+}
+
+
+exports ['map with throw inside'] = function (test) {
+  var err = new Error('TEST ERROR')
+  ctrl.parallel.map(function (item, next) {
+    throw err
+  })([6,6,6],function (_err) {
+    console.error(_err)
+    it(_err.errors).every(it.equal(err))
+    test.done()
+  })
 }
